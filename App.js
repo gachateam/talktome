@@ -34,10 +34,19 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView style={styles.body}>
       <Text> Hello world! </Text>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  body: {
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+  },
+});
 
 export default App;
