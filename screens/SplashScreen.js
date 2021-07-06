@@ -13,6 +13,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
 
+MaterialIcons.loadFont()
+
 const SplashScreen = ({ navigation }) => {
     const { colors } = useTheme();
 

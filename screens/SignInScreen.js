@@ -15,6 +15,9 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '@react-navigation/native';
 
+FontAwesome.loadFont()
+Feather.loadFont()
+
 const SignInScreen = ({ navigation }) => {
     const { colors } = useTheme();
 

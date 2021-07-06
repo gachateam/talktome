@@ -16,6 +16,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
+FontAwesome.loadFont()
+Feather.loadFont()
+
 const SignInScreen = ({ navigation }) => {
 
     const [data, setData] = React.useState({
