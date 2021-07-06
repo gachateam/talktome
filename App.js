@@ -28,11 +28,6 @@ import {
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    flex: 1,
-  };
-
   return (
     <SafeAreaView style={styles.body}>
       <Text> Hello world! </Text>
@@ -42,7 +37,7 @@ const App = () => {
 
 const styles = StyleSheet.create({
   body: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
