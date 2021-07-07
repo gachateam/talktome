@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     View,
     Text,
@@ -25,7 +25,7 @@ const SignInScreen = ({ navigation }) => {
 
     // data email and password
     const [data, setData] = React.useState({
-        username: '',
+        email: '',
         password: '',
         confirm_password: '',
         check_textInputChange: false,
@@ -33,29 +33,62 @@ const SignInScreen = ({ navigation }) => {
         confirm_secureTextEntry: true,
     });
 
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
+    const passCharacter = 6
+    const [errEmail, setErrEmail] = useState('')
+    const [errPass, setErrPass] = useState('')
+    const [errConfirmPass, setErrConfirmPass] = useState('')
+    // login error when sent email and password to firebase
+    const [loginError, setLoginError] = React.useState('')
+
+    const animate = useRef(null)
+    const email = useRef(null)
+    const pass = useRef(null)
+    const confirmPass = useRef(null)
+
+    useEffect(() => {
+        email.current.focus()
+        return () => { }
+    }, [])
+
     // check email change and set email value
     const textInputChange = (val) => {
         setData({
             ...data,
-            username: val,
-            check_textInputChange: val.length !== 0
+            email: val.trim(),
+            check_textInputChange: val.trim().length !== 0
         });
+        if (!emailRegex.test(val.trim())) {
+            return setErrEmail("Please enter valid email")
+        } else {
+            return setErrEmail('')
+        }
     }
 
     // set password value
     const handlePasswordChange = (val) => {
         setData({
             ...data,
-            password: val
+            password: val.trim()
         });
+        if (val.trim().length < passCharacter - 1) {
+            return setErrPass(`Password must be ${passCharacter} characters long.`)
+        } else {
+            return setErrPass('')
+        }
     }
 
     // set confirm password value
     const handleConfirmPasswordChange = (val) => {
         setData({
             ...data,
-            confirm_password: val
+            confirm_password: val.trim()
         });
+        if (val.trim().length < passCharacter - 1) {
+            return setErrConfirmPass(`Password must be ${passCharacter} characters long.`)
+        } else {
+            return setErrConfirmPass('')
+        }
     }
 
     // update secure text in password field when click eye
@@ -76,6 +109,22 @@ const SignInScreen = ({ navigation }) => {
 
     // register account
     const handleSignUp = () => {
+
+        if (data.email === '' || data.password === '' || data.confirm_password === '') {
+            animate.current && animate.current.animate('tada', 1000)
+            return setLoginError("Can't empty email, password, comfirm password.")
+        }
+
+        if (errEmail || errPass || errConfirmPass) {
+            animate.current && animate.current.animate('tada', 1000)
+            return setLoginError("Please enter valid email, password, comfirm password.")
+        }
+
+        if (data.password != data.confirm_password) {
+            animate.current && animate.current.animate('tada', 1000)
+            return setLoginError("Please enter valid password and comfirm password.")
+        }
+
         auth().createUserWithEmailAndPassword(data.email, data.password)
             .then(() => setLoginError(''))
             .catch((err) => setLoginError(err.message))
@@ -118,9 +167,12 @@ const SignInScreen = ({ navigation }) => {
                         />
                         {/* input username */}
                         <TextInput
+                            ref={email}
                             placeholder="Your Username"
                             placeholderTextColor="#808080"
                             style={styles.textInput}
+                            returnKeyType="next"
+                            onSubmitEditing={() => pass.current.focus()}
                             autoCapitalize="none"
                             onChangeText={(val) => textInputChange(val)}
                         />
@@ -136,6 +188,11 @@ const SignInScreen = ({ navigation }) => {
                         </Animatable.View>}
                     </View>
 
+                    {/* error email */}
+                    {!(errEmail === '') && <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>{errEmail}</Text>
+                    </Animatable.View>}
+
                     {/* password field */}
                     <Text style={[styles.text_footer, {
                         marginTop: 35
@@ -149,10 +206,13 @@ const SignInScreen = ({ navigation }) => {
                         />
                         {/* password field */}
                         <TextInput
+                            ref={pass}
                             placeholder="Your Password"
                             placeholderTextColor="#808080"
                             secureTextEntry={data.secureTextEntry}
                             style={styles.textInput}
+                            returnKeyType='next'
+                            onSubmitEditing={() => confirmPass.current.focus()}
                             autoCapitalize="none"
                             onChangeText={(val) => handlePasswordChange(val)}
                         />
@@ -169,6 +229,11 @@ const SignInScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
 
+                    {/* error email */}
+                    {!(errPass === '') && <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>{errPass}</Text>
+                    </Animatable.View>}
+
                     {/* confirm password */}
                     <Text style={[styles.text_footer, {
                         marginTop: 35
@@ -182,10 +247,13 @@ const SignInScreen = ({ navigation }) => {
                         />
                         {/* confirn field */}
                         <TextInput
+                            ref={confirmPass}
                             placeholder="Confirm Your Password"
                             placeholderTextColor="#808080"
                             secureTextEntry={data.confirm_secureTextEntry}
                             style={styles.textInput}
+                            returnKeyType='next'
+                            onSubmitEditing={handleSignUp}
                             autoCapitalize="none"
                             onChangeText={(val) => handleConfirmPasswordChange(val)}
                         />
@@ -201,6 +269,21 @@ const SignInScreen = ({ navigation }) => {
                             />
                         </TouchableOpacity>
                     </View>
+
+                    {/* error email */}
+                    {!(errConfirmPass === '') && <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>{errConfirmPass}</Text>
+                    </Animatable.View>}
+
+                    {/* error password */}
+                    {!(loginError === '') && <Animatable.View animation="tada" ref={animate} duration={1000}>
+                        <Text style={[styles.errorMsg, {
+                            textAlign: 'center',
+                            fontSize: 20,
+                            marginBottom: -20,
+                            marginTop: 10
+                        }]}>{loginError}</Text>
+                    </Animatable.View>}
                     {/* license */}
                     <View style={styles.textPrivate}>
                         <Text style={styles.color_textPrivate}>By signing up you agree to our</Text>
@@ -212,7 +295,7 @@ const SignInScreen = ({ navigation }) => {
                     <View style={styles.button}>
                         <TouchableOpacity
                             style={styles.signIn}
-                            onPress={() => { }}
+                            onPress={handleSignUp}
                         >
                             <LinearGradient
                                 colors={['#08d4c4', '#01ab9d']}
@@ -282,6 +365,10 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 30
+    },
+    errorMsg: {
+        color: '#FF0000',
+        fontSize: 14,
     },
     text_footer: {
         color: '#05375a',
