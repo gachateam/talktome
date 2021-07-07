@@ -14,13 +14,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth'
 
+// load font for ios
 FontAwesome.loadFont()
 Feather.loadFont()
 
 const SignInScreen = ({ navigation }) => {
     const { colors } = useTheme();
 
+    // data email and password 
     const [data, setData] = React.useState({
         email: '',
         password: '',
@@ -28,27 +31,51 @@ const SignInScreen = ({ navigation }) => {
         secureTextEntry: true,
     })
 
-    const passCharacter = 6;
-    const userCharacter = 8;
-    const [userError, setUserError] = React.useState('')
-    const [passError, setPassError] = React.useState('')
+    // email ref
+    const email = React.useRef(null)
+    const password = React.useRef(null)
 
+    React.useEffect(() => {
+        email.current.focus()
+        return () => { }
+    }, [])
+
+    // password charactor valid
+    const passCharacter = 6;
+    // email character valid
+    const userCharacter = 8;
+    // user error
+    const [userError, setUserError] = React.useState('')
+    // login error when sent email and password to firebase
+    const [loginError, setLoginError] = React.useState('')
+    // password error when input password invalid
+    const [passError, setPassError] = React.useState('')
+    // animate login error
+    const animate = React.useRef(null)
+
+    // set value of email and check valid email
     const textInputChange = (val) => {
         setData({
             ...data,
             email: val,
             checkInputChange: val.length != 0,
         })
-        setUserError(val.trim().length > userCharacter ? '' : `Username must be ${userCharacter} characters long.`)
+        if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val.trim())) {
+            return setUserError("Please enter valid email")
+        } else if (!(val.trim().length > userCharacter - 1)) {
+            return setUserError(`Username must be ${userCharacter} characters long.`)
+        } else {
+            return setUserError('')
+        }
     }
 
     //kiểm tra nhập đúng định dạng password chưa
     const handlePasswordChange = (val) => {
         setData({
             ...data,
-            password: val,
+            password: val.trim(),
         })
-        setPassError(val.trim().length > passCharacter ? '' : `Password must be ${passCharacter} characters long.`)
+        setPassError(val.trim().length > passCharacter - 1 ? '' : `Password must be ${passCharacter} characters long.`)
     }
 
     //ẩn password 
@@ -60,37 +87,37 @@ const SignInScreen = ({ navigation }) => {
     }
 
     //checklogin
-    const loginHandle = (userName, password) => {
+    const loginHandle = (e) => {
 
-        const foundUser = Users.filter(item => {
-            return userName == item.username && password == item.password;
-        });
-
-        if (data.username.length == 0 || data.password.length == 0) {
-            Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
-                { text: 'Okay' }
-            ]);
-            return;
+        if (data.email === '' || data.password === '') {
+            animate.current && animate.current.animate('tada', 1000)
+            return setLoginError("Can't empty Email or Password.")
         }
 
-        if (foundUser.length == 0) {
-            Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-                { text: 'Okay' }
-            ]);
-            return;
+        if (userError || passError) {
+            animate.current && animate.current.animate('tada', 1000)
+            return setLoginError("Please enter valid email or password.")
         }
-        signIn(foundUser);
+
+        auth().signInWithEmailAndPassword(data.email, data.password).catch((err) => {
+            animate.current && animate.current.animate('tada', 1000)
+            if (err.code == 'auth/user-not-found') {
+                setLoginError("Not found email.")
+            } else if (err.code == 'auth/too-many-requests') {
+                setLoginError("Trying again after some delay would unblock.")
+            }
+        })
     }
-
-
 
     return (
         <LinearGradient
             colors={['#693ecc', "#d54cc9"]}
             style={styles.container}
         >
+            {/* status bar */}
             <StatusBar backgroundColor='#693ecc' barStyle="light-content" />
             <View style={styles.header}>
+                {/* icon app */}
                 <Animatable.Image
                     animation="bounceIn"
                     duraton="1500"
@@ -118,9 +145,13 @@ const SignInScreen = ({ navigation }) => {
                         size={20}
                     />
                     <TextInput
+                        ref={email}
                         placeholder="Enter your email..."
+                        placeholderTextColor="#808080"
                         style={styles.textInput}
                         autoCapitalize="none"
+                        returnKeyType="next"
+                        onSubmitEditing={() => password.current.focus()}
                         onChangeText={textInputChange}
                     />
                     {data.checkInputChange && <Animatable.View
@@ -150,10 +181,14 @@ const SignInScreen = ({ navigation }) => {
                         size={20}
                     />
                     <TextInput
+                        ref={password}
                         placeholder="Enter your password..."
+                        placeholderTextColor="#808080"
                         secureTextEntry={data.secureTextEntry}
                         style={styles.textInput}
                         autoCapitalize="none"
+                        returnKeyType="go"
+                        onSubmitEditing={loginHandle}
                         onChangeText={handlePasswordChange}
                     />
                     <TouchableOpacity
@@ -175,9 +210,19 @@ const SignInScreen = ({ navigation }) => {
                 <TouchableOpacity>
                     <Text style={{ color: '#009387', marginTop: 15 }}>Forgot password?</Text>
                 </TouchableOpacity>
+                {/* error password */}
+                {!(loginError === '') && <Animatable.View animation="tada" ref={animate} duration={1000}>
+                    <Text style={[styles.errorMsg, {
+                        textAlign: 'center',
+                        fontSize: 20,
+                        marginBottom: -30,
+                        marginTop: 10
+                    }]}>{loginError}</Text>
+                </Animatable.View>}
                 <View style={styles.button}>
                     <TouchableOpacity
                         style={styles.signIn}
+                        onPress={loginHandle}
                     >
                         <LinearGradient
                             colors={['#08d4c4', '#01ab9d']}
@@ -210,7 +255,7 @@ const SignInScreen = ({ navigation }) => {
 export default SignInScreen;
 
 const { height } = Dimensions.get("screen");
-const height_logo = height * 0.15;
+const height_logo = height * 0.12;
 
 const styles = StyleSheet.create({
     container: {

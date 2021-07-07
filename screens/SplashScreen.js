@@ -12,10 +12,12 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth'
 
+//load font ios
 MaterialIcons.loadFont()
-
 const SplashScreen = ({ navigation }) => {
+    //dark theme
     const { colors } = useTheme();
 
     return (
@@ -23,7 +25,9 @@ const SplashScreen = ({ navigation }) => {
             colors={['#693ecc', "#d54cc9"]}
             style={styles.container}
         >
+            {/* status bar */}
             <StatusBar backgroundColor='#693ecc' barStyle="light-content" />
+            {/* logo */}
             <View style={styles.header}>
                 <Animatable.Image
                     animation="bounceIn"
@@ -33,12 +37,15 @@ const SplashScreen = ({ navigation }) => {
                     resizeMode="stretch"
                 />
             </View>
+
+            {/* footer */}
             <Animatable.View
                 style={[styles.footer, {
                     backgroundColor: colors.background
                 }]}
                 animation="fadeInUpBig"
             >
+                {/* login email and password */}
                 <Text style={[styles.title, {
                     color: colors.text
                 }]}>Stay connected with everyone!</Text>
@@ -58,13 +65,17 @@ const SplashScreen = ({ navigation }) => {
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
+
+                {/* login gg and facebook */}
                 <Text style={styles.text}>Sign in with Google or Facebook</Text>
                 <View style={styles.buttonGGFB}>
                     <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
+
                         <LinearGradient
                             colors={['#fff', '#fff']}
                             style={StyleSheet.compose(styles.signInGGFB, styles.signInGG)}
                         >
+
                             <Image
                                 source={require('../assets/Google_Logo.png')}
                                 style={styles.imageGG}
@@ -73,6 +84,7 @@ const SplashScreen = ({ navigation }) => {
                             <Text style={styles.textSignGG}>Google</Text>
                         </LinearGradient>
                     </TouchableOpacity>
+
                     <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')}>
                         <LinearGradient
                             colors={['#1877f2', '#1877f2']}

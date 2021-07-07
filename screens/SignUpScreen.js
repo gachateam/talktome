@@ -15,12 +15,15 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import auth from '@react-native-firebase/auth'
 
+// load font for ios
 FontAwesome.loadFont()
 Feather.loadFont()
 
 const SignInScreen = ({ navigation }) => {
 
+    // data email and password
     const [data, setData] = React.useState({
         username: '',
         password: '',
@@ -30,6 +33,7 @@ const SignInScreen = ({ navigation }) => {
         confirm_secureTextEntry: true,
     });
 
+    // check email change and set email value
     const textInputChange = (val) => {
         setData({
             ...data,
@@ -38,6 +42,7 @@ const SignInScreen = ({ navigation }) => {
         });
     }
 
+    // set password value
     const handlePasswordChange = (val) => {
         setData({
             ...data,
@@ -45,6 +50,7 @@ const SignInScreen = ({ navigation }) => {
         });
     }
 
+    // set confirm password value
     const handleConfirmPasswordChange = (val) => {
         setData({
             ...data,
@@ -52,6 +58,7 @@ const SignInScreen = ({ navigation }) => {
         });
     }
 
+    // update secure text in password field when click eye
     const updateSecureTextEntry = () => {
         setData({
             ...data,
@@ -59,6 +66,7 @@ const SignInScreen = ({ navigation }) => {
         });
     }
 
+    // update secure text in confirm password field when click eye
     const updateConfirmSecureTextEntry = () => {
         setData({
             ...data,
@@ -66,13 +74,22 @@ const SignInScreen = ({ navigation }) => {
         });
     }
 
+    // register account
+    const handleSignUp = () => {
+        auth().createUserWithEmailAndPassword(data.email, data.password)
+            .then(() => setLoginError(''))
+            .catch((err) => setLoginError(err.message))
+    }
+
     return (
         <LinearGradient
             colors={['#693ecc', "#d54cc9"]}
             style={styles.container}
         >
+            {/* status bar */}
             <StatusBar backgroundColor='#693ecc' barStyle="light-content" />
             <View style={styles.header}>
+                {/* icon */}
                 <Animatable.Image
                     animation="bounceIn"
                     duraton="1500"
@@ -81,26 +98,33 @@ const SignInScreen = ({ navigation }) => {
                     resizeMode="stretch"
                 />
             </View>
+
             <Animatable.View
                 animation="fadeInUpBig"
                 style={styles.footer}
             >
+                {/* title */}
                 <Text style={styles.title}>Register Now</Text>
 
                 <ScrollView>
+                    {/* lable username */}
                     <Text style={styles.text_footer}>Username</Text>
                     <View style={styles.action}>
+                        {/* icon user */}
                         <FontAwesome
                             name="user-o"
                             color="#05375a"
                             size={20}
                         />
+                        {/* input username */}
                         <TextInput
                             placeholder="Your Username"
+                            placeholderTextColor="#808080"
                             style={styles.textInput}
                             autoCapitalize="none"
                             onChangeText={(val) => textInputChange(val)}
                         />
+                        {/* check input username valid */}
                         {data.check_textInputChange && <Animatable.View
                             animation="bounceIn"
                         >
@@ -112,26 +136,32 @@ const SignInScreen = ({ navigation }) => {
                         </Animatable.View>}
                     </View>
 
+                    {/* password field */}
                     <Text style={[styles.text_footer, {
                         marginTop: 35
                     }]}>Password</Text>
                     <View style={styles.action}>
+                        {/* password icon */}
                         <Feather
                             name="lock"
                             color="#05375a"
                             size={20}
                         />
+                        {/* password field */}
                         <TextInput
                             placeholder="Your Password"
+                            placeholderTextColor="#808080"
                             secureTextEntry={data.secureTextEntry}
                             style={styles.textInput}
                             autoCapitalize="none"
                             onChangeText={(val) => handlePasswordChange(val)}
                         />
+                        {/* icon eye update secure password field */}
                         <TouchableOpacity
                             onPress={updateSecureTextEntry}
                         >
                             <Feather
+                                // if is secure icon eye on
                                 name={data.secureTextEntry ? "eye-off" : "eye"}
                                 color="grey"
                                 size={20}
@@ -139,40 +169,46 @@ const SignInScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
 
+                    {/* confirm password */}
                     <Text style={[styles.text_footer, {
                         marginTop: 35
                     }]}>Confirm Password</Text>
                     <View style={styles.action}>
+                        {/* confirm password icon */}
                         <Feather
                             name="lock"
                             color="#05375a"
                             size={20}
                         />
+                        {/* confirn field */}
                         <TextInput
                             placeholder="Confirm Your Password"
+                            placeholderTextColor="#808080"
                             secureTextEntry={data.confirm_secureTextEntry}
                             style={styles.textInput}
                             autoCapitalize="none"
                             onChangeText={(val) => handleConfirmPasswordChange(val)}
                         />
+                        {/* confirm password icon eye update secure confirm password field */}
                         <TouchableOpacity
                             onPress={updateConfirmSecureTextEntry}
                         >
                             <Feather
+                                // if is secure icon eye on
                                 name={data.confirm_secureTextEntry ? "eye-off" : "eye"}
                                 color="grey"
                                 size={20}
                             />
                         </TouchableOpacity>
                     </View>
+                    {/* license */}
                     <View style={styles.textPrivate}>
-                        <Text style={styles.color_textPrivate}>
-                            By signing up you agree to our
-                        </Text>
+                        <Text style={styles.color_textPrivate}>By signing up you agree to our</Text>
                         <Text style={[styles.color_textPrivate, { fontWeight: 'bold' }]}>{" "}Terms of service</Text>
                         <Text style={styles.color_textPrivate}>{" "}and</Text>
                         <Text style={[styles.color_textPrivate, { fontWeight: 'bold' }]}>{" "}Privacy policy</Text>
                     </View>
+                    {/* button */}
                     <View style={styles.button}>
                         <TouchableOpacity
                             style={styles.signIn}
@@ -210,8 +246,10 @@ const SignInScreen = ({ navigation }) => {
 export default SignInScreen;
 
 const { height } = Dimensions.get("screen");
+// height of logo
 const height_logo = height * 0.12;
 
+// style
 const styles = StyleSheet.create({
     container: {
         flex: 1,
