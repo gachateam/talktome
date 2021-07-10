@@ -1,15 +1,15 @@
-import React from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
+import React from 'react';
+import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from './HomeScreen';
 
-const RootStack = createStackNavigator()
+const RootStack = createStackNavigator();
 
-const RootHomeScreen = ({ navigation }) => {
-    return (
-        <RootStack.Navigator headerMode="none">
-            <RootStack.Screen name="HomeScreen" component={HomeScreen} />
-        </RootStack.Navigator>
-    )
-}
+const RootHomeScreen = ({navigation}) => {
+  return (
+    <RootStack.Navigator headerMode="none">
+      <RootStack.Screen name="HomeScreen" component={HomeScreen} />
+    </RootStack.Navigator>
+  );
+};
 
-export default RootHomeScreen
+export default RootHomeScreen;
