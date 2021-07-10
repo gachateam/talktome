@@ -14,6 +14,7 @@
 		1921031AF2EC98B0154FBA8A /* libPods-talktome-talktomeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F661D0B908336B4BDD9402A /* libPods-talktome-talktomeTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		DA2DED4AF14B90DD1E658B9C /* libPods-talktome.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00A69DCC24E79B1AA1FACC9D /* libPods-talktome.a */; };
+		EA072D792699A604003176E6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EA072D782699A604003176E6 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = talktome/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8C5838347AB8ED01CF18EE09 /* Pods-talktome-talktomeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-talktome-talktomeTests.release.xcconfig"; path = "Target Support Files/Pods-talktome-talktomeTests/Pods-talktome-talktomeTests.release.xcconfig"; sourceTree = "<group>"; };
 		9417B6351F9861938DD51382 /* Pods-talktome-talktomeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-talktome-talktomeTests.debug.xcconfig"; path = "Target Support Files/Pods-talktome-talktomeTests/Pods-talktome-talktomeTests.debug.xcconfig"; sourceTree = "<group>"; };
+		EA072D782699A604003176E6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "talktome/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -86,6 +88,7 @@
 		13B07FAE1A68108700A75B9A /* talktome */ = {
 			isa = PBXGroup;
 			children = (
+				EA072D782699A604003176E6 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -114,7 +117,6 @@
 				9417B6351F9861938DD51382 /* Pods-talktome-talktomeTests.debug.xcconfig */,
 				8C5838347AB8ED01CF18EE09 /* Pods-talktome-talktomeTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -246,6 +248,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				EA072D792699A604003176E6 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
