@@ -13,13 +13,40 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useTheme} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 //load font ios
 MaterialIcons.loadFont();
 const SplashScreen = ({navigation}) => {
   //dark theme
   const {colors} = useTheme();
+  async function onGoogleButtonPress() {
+    try {
+      const {idToken} = await GoogleSignin.signIn();
 
+      // Create a Google credential with the token
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+      // Sign-in the user with the credential
+      return auth().signInWithCredential(googleCredential);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // sign in was cancelled
+        console.log('cancelled');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation in progress already
+        console.log('in progress');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        console.log('play services not available or outdated');
+      } else {
+        console.log('Something went wrong:', error);
+      }
+    }
+  }
   return (
     <LinearGradient colors={['#693ecc', '#d54cc9']} style={styles.container}>
       {/* status bar */}
@@ -71,8 +98,7 @@ const SplashScreen = ({navigation}) => {
           {/* login gg and facebook */}
           <Text style={styles.text}>Sign in with Google or Facebook</Text>
           <View style={styles.buttonGGFB}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('SignInScreen')}>
+            <TouchableOpacity onPress={() => onGoogleButtonPress()}>
               <LinearGradient
                 colors={['#fff', '#fff']}
                 style={StyleSheet.compose(styles.signInGGFB, styles.signInGG)}>

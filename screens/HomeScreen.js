@@ -6,6 +6,7 @@ const HomeScreen = () => {
   const handleSignout = () => {
     auth().signOut();
   };
+  console.log(auth().currentUser);
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleSignout}>

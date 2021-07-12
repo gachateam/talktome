@@ -1,6 +1,0 @@
-module Pods_talktome_talktomeTests {
-  umbrella header "Pods-talktome-talktomeTests-umbrella.h"
-
-  export *
-  module * { export * }
-}
