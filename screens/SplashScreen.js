@@ -12,23 +12,26 @@ import {
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useTheme } from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import {LoginManager, AccessToken} from 'react-native-fbsdk';
 
 //load font ios
 MaterialIcons.loadFont();
-const SplashScreen = ({ navigation }) => {
+const SplashScreen = ({navigation}) => {
   //dark theme
-  const { colors } = useTheme();
+  const {colors} = useTheme();
   async function onFacebookButtonPress() {
     try {
       // Attempt login with permissions
-      const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+      const result = await LoginManager.logInWithPermissions([
+        'public_profile',
+        'email',
+      ]);
 
       if (result.isCancelled) {
         throw 'User cancelled the login process';
@@ -42,7 +45,9 @@ const SplashScreen = ({ navigation }) => {
       }
 
       // Create a Firebase credential with the AccessToken
-      const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+      const facebookCredential = auth.FacebookAuthProvider.credential(
+        data.accessToken,
+      );
 
       // Sign-in the user with the credential
       return auth().signInWithCredential(facebookCredential);
@@ -52,7 +57,7 @@ const SplashScreen = ({ navigation }) => {
   }
   async function onGoogleButtonPress() {
     try {
-      const { idToken } = await GoogleSignin.signIn();
+      const {idToken} = await GoogleSignin.signIn();
 
       // Create a Google credential with the token
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
@@ -138,8 +143,11 @@ const SplashScreen = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => onFacebookButtonPress().then(() => console.log('Signed in with Facebook!'))}
-            >
+              onPress={() =>
+                onFacebookButtonPress().then(() =>
+                  console.log('Signed in with Facebook!'),
+                )
+              }>
               <LinearGradient
                 colors={['#1877f2', '#1877f2']}
                 style={StyleSheet.compose(styles.signInGGFB, styles.signInFB)}>
@@ -159,7 +167,7 @@ const SplashScreen = ({ navigation }) => {
 
 export default SplashScreen;
 
-const { height } = Dimensions.get('screen');
+const {height} = Dimensions.get('screen');
 const height_logo = height * 0.28;
 
 const styles = StyleSheet.create({

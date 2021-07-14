@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
   Platform,
+  Alert,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,36 +22,27 @@ import auth from '@react-native-firebase/auth';
 FontAwesome.loadFont();
 Feather.loadFont();
 
-const SignInScreen = ({navigation}) => {
+const ForgotPassword = ({navigation}) => {
   const {colors} = useTheme();
 
   // data email and password
   const [data, setData] = React.useState({
     email: '',
-    password: '',
-    checkInputChange: false,
-    secureTextEntry: true,
   });
 
   // email ref
   const email = React.useRef(null);
-  const password = React.useRef(null);
 
   React.useEffect(() => {
     email.current.focus();
     return () => {};
   }, []);
 
-  // password charactor valid
-  const passCharacter = 6;
-  // email character valid
-  const userCharacter = 8;
+  const userCharacter = 6;
   // user error
   const [userError, setUserError] = React.useState('');
   // login error when sent email and password to firebase
   const [loginError, setLoginError] = React.useState('');
-  // password error when input password invalid
-  const [passError, setPassError] = React.useState('');
   // animate login error
   const animate = React.useRef(null);
 
@@ -59,7 +51,6 @@ const SignInScreen = ({navigation}) => {
     setData({
       ...data,
       email: val,
-      checkInputChange: val.length !== 0,
     });
     if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(val.trim())) {
       return setUserError('Please enter valid email');
@@ -70,48 +61,38 @@ const SignInScreen = ({navigation}) => {
     }
   };
 
-  //kiểm tra nhập đúng định dạng password chưa
-  const handlePasswordChange = val => {
-    setData({
-      ...data,
-      password: val.trim(),
-    });
-    setPassError(
-      val.trim().length > passCharacter - 1
-        ? ''
-        : `Password must be ${passCharacter} characters long.`,
-    );
-  };
-
-  //ẩn password
-  const updateSecureTextEntry = () => {
-    setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
-    });
-  };
-
   //checklogin
   const loginHandle = e => {
-    if (data.email === '' || data.password === '') {
+    if (data.email === '') {
       animate.current && animate.current.animate('tada', 1000);
-      return setLoginError("Can't empty Email or Password.");
+      return setLoginError("Can't empty Email");
     }
 
-    if (userError || passError) {
+    if (userError) {
       animate.current && animate.current.animate('tada', 1000);
-      return setLoginError('Please enter valid email or password.');
+      return setLoginError('Please enter valid email');
     }
 
     auth()
-      .signInWithEmailAndPassword(data.email, data.password)
+      .sendPasswordResetEmail(data.email)
+      .then(result => {
+        Alert.alert('Đã gửi', 'Go to Login', [
+          {
+            text: 'Cancel',
+            onPress: () => {},
+            style: 'cancel',
+          },
+          {text: 'LOGIN', onPress: () => navigation.goBack()},
+        ]);
+      })
       .catch(err => {
-        animate.current && animate.current.animate('tada', 1000);
-        if (err.code === 'auth/user-not-found') {
-          setLoginError('Not found email.');
-        } else if (err.code === 'auth/too-many-requests') {
-          setLoginError('Trying again after some delay would unblock.');
-        }
+        Alert.alert('ERROR', err.message, [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {text: 'OK'},
+        ]);
       });
   };
 
@@ -137,7 +118,7 @@ const SignInScreen = ({navigation}) => {
           },
         ]}
         animation="fadeInUpBig">
-        <Text style={styles.title}>Welcome!</Text>
+        <Text style={styles.title}>Forgot Password</Text>
 
         <ScrollView>
           {/* enter email */}
@@ -151,7 +132,6 @@ const SignInScreen = ({navigation}) => {
               style={styles.textInput}
               autoCapitalize="none"
               returnKeyType="next"
-              onSubmitEditing={() => password.current.focus()}
               onChangeText={textInputChange}
             />
             {data.checkInputChange && (
@@ -168,41 +148,6 @@ const SignInScreen = ({navigation}) => {
             </Animatable.View>
           )}
 
-          {/* enter password */}
-          <Text style={[styles.text_footer, styles.mt10]}>Password</Text>
-          <View style={styles.action}>
-            <Feather name="lock" color="#05375a" size={20} />
-            <TextInput
-              ref={password}
-              placeholder="Enter your password..."
-              placeholderTextColor="#808080"
-              secureTextEntry={data.secureTextEntry}
-              style={styles.textInput}
-              autoCapitalize="none"
-              returnKeyType="go"
-              onSubmitEditing={loginHandle}
-              onChangeText={handlePasswordChange}
-            />
-            <TouchableOpacity onPress={updateSecureTextEntry}>
-              <Feather
-                name={data.secureTextEntry ? 'eye-off' : 'eye'}
-                color="gray"
-                size={20}
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* error password */}
-          {!(passError === '') && (
-            <Animatable.View animation="fadeInLeft" duration={500}>
-              <Text style={styles.errorMsg}>{passError}</Text>
-            </Animatable.View>
-          )}
-
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ForgotPassword')}>
-            <Text style={styles.forgotPassword}>Forgot password?</Text>
-          </TouchableOpacity>
           {/* error password */}
           {!(loginError === '') && (
             <Animatable.View animation="tada" ref={animate} duration={1000}>
@@ -213,6 +158,15 @@ const SignInScreen = ({navigation}) => {
           )}
           <View style={styles.button}>
             <TouchableOpacity style={styles.signIn} onPress={loginHandle}>
+              <LinearGradient
+                colors={['#08d4c4', '#01ab9d']}
+                style={styles.signIn}>
+                <Text style={[styles.textSign, styles.colorWhite]}>Reset</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.signIn, styles.signUpButton]}
+              onPress={() => navigation.navigate('SignInScreen')}>
               <LinearGradient
                 colors={['#08d4c4', '#01ab9d']}
                 style={styles.signIn}>
@@ -236,7 +190,7 @@ const SignInScreen = ({navigation}) => {
   );
 };
 
-export default SignInScreen;
+export default ForgotPassword;
 
 const {height} = Dimensions.get('screen');
 const height_logo = height * 0.12;
