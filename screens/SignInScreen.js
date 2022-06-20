@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-  StatusBar,
   TextInput,
   ScrollView,
   Platform,
+  StatusBar,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -16,6 +16,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useTheme} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
+import LoginBackground from '../components/LoginBackground';
 
 // load font for ios
 FontAwesome.loadFont();
@@ -116,9 +117,8 @@ const SignInScreen = ({navigation}) => {
   };
 
   return (
-    <LinearGradient colors={['#693ecc', '#d54cc9']} style={styles.container}>
-      {/* status bar */}
-      <StatusBar backgroundColor="#693ecc" barStyle="light-content" />
+    <LoginBackground>
+      <StatusBar backgroundColor="#ffd200" barStyle="light-content" />
       <View style={styles.header}>
         {/* icon app */}
         <Animatable.Image
@@ -232,7 +232,7 @@ const SignInScreen = ({navigation}) => {
           </View>
         </ScrollView>
       </Animatable.View>
-    </LinearGradient>
+    </LoginBackground>
   );
 };
 
@@ -242,9 +242,6 @@ const {height} = Dimensions.get('screen');
 const height_logo = height * 0.12;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   header: {
     flex: 1,
     justifyContent: 'center',

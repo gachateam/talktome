@@ -97,9 +97,11 @@ const ForgotPassword = ({navigation}) => {
   };
 
   return (
-    <LinearGradient colors={['#693ecc', '#d54cc9']} style={styles.container}>
+    <LinearGradient
+      colors={['#ffd200', '#6edf00', '#00dfbb']}
+      style={styles.container}>
       {/* status bar */}
-      <StatusBar backgroundColor="#693ecc" barStyle="light-content" />
+      <StatusBar backgroundColor="#ffd200" barStyle="light-content" />
       <View style={styles.header}>
         {/* icon app */}
         <Animatable.Image

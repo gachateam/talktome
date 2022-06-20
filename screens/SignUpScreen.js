@@ -15,6 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import auth from '@react-native-firebase/auth';
+import LoginBackground from '../components/LoginBackground';
 
 // load font for ios
 FontAwesome.loadFont();
@@ -137,9 +138,9 @@ const SignInScreen = ({navigation}) => {
   };
 
   return (
-    <LinearGradient colors={['#693ecc', '#d54cc9']} style={styles.container}>
-      {/* status bar */}
-      <StatusBar backgroundColor="#693ecc" barStyle="light-content" />
+    <LoginBackground>
+      <StatusBar backgroundColor="#ffd200" barStyle="light-content" />
+
       <View style={styles.header}>
         {/* icon */}
         <Animatable.Image
@@ -302,7 +303,7 @@ const SignInScreen = ({navigation}) => {
           </View>
         </ScrollView>
       </Animatable.View>
-    </LinearGradient>
+    </LoginBackground>
   );
 };
 
@@ -314,10 +315,6 @@ const height_logo = height * 0.12;
 
 // style
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#009387',
-  },
   header: {
     flex: 1,
     justifyContent: 'center',

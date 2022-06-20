@@ -5,9 +5,9 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-  StatusBar,
   Image,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,6 +19,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
+import LoginBackground from '../components/LoginBackground';
 
 //load font ios
 MaterialIcons.loadFont();
@@ -79,10 +80,9 @@ const SplashScreen = ({navigation}) => {
     }
   }
   return (
-    <LinearGradient colors={['#693ecc', '#d54cc9']} style={styles.container}>
-      {/* status bar */}
-      <StatusBar backgroundColor="#693ecc" barStyle="light-content" />
-      {/* logo */}
+    <LoginBackground>
+      <StatusBar backgroundColor="#ffd200" barStyle="light-content" />
+
       <View style={styles.header}>
         <Animatable.Image
           animation="bounceIn"
@@ -161,7 +161,7 @@ const SplashScreen = ({navigation}) => {
           </View>
         </ScrollView>
       </Animatable.View>
-    </LinearGradient>
+    </LoginBackground>
   );
 };
 
@@ -171,9 +171,6 @@ const {height} = Dimensions.get('screen');
 const height_logo = height * 0.28;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   header: {
     flex: 4,
     justifyContent: 'center',
